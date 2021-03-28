@@ -110,3 +110,5 @@ Route::get('/mark/{course_id}','MarkController@View_Mark');
 //Submission
 
 Route::POST('/assignment/submission/{course_id}','SubmissionController@Submission');
+
+Route::POST('/assignment/submission/edit/{course_id}','SubmissionController@UpateSubmission');

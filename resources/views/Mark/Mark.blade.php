@@ -30,10 +30,7 @@
                 <i class="fa fa-pencil-square-o text-success text-active"></i></a>
             </td>
             <td>
-                <a href="{{URL::to('/admin/delete-mark/')}}"
-                class="active styling-edit" ui-toggle-class=""
-                onclick="return confirm('Are you sure to delete mark?')">
-                <i class="fa fa-times text-danger text"></i></a>
+                Mark
             </td>
           </tr>  
           @endforeach       

@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use DB;
 use Session;
 use Illuminate\Support\Facades\Redirect;
+
+use Carbon\Carbon;
 session_start();
 
 class AssignmentController extends Controller
@@ -45,7 +47,7 @@ class AssignmentController extends Controller
         //insert product
         $data = array();
         $data['asm_name'] = $request->asm_name;
-        $data['exp'] = $request->exp;
+        $data['exp'] = Carbon::parse($request->exp);
         $data['course_id'] = $request->course_id;
         $data['asm_status'] = $request->asm_status;
         
@@ -106,7 +108,15 @@ class AssignmentController extends Controller
     {
         $infor_course = DB::table('tbl_course')->where('course_id', $course_id)->get();
         $assignment = DB::table('tbl_asm')->where('course_id', $course_id)->get();
+        
+        $user_id = Session::get('user_id');
 
-        return view('Assignment.Assignment')->with('assignment', $assignment)->with('infor_course', $infor_course);
+        $user = DB::Table('tbl_submission')->where('user_id',$user_id)
+                                        ->where('course_id',$course_id)->first();
+
+        
+        return view('Assignment.Assignment')->with('assignment', $assignment)
+                                            ->with('infor_course', $infor_course)
+                                            ->with('submit',$user);
     }
 }

@@ -6,13 +6,14 @@ use Illuminate\Http\Request;
 use DB;
 use Session;
 use Illuminate\Support\Facades\Redirect;
+use Carbon\Carbon;
 session_start();
 
 class CourseController extends Controller
 {
     /**
      * Display a listing of the resource.
-     *
+     *ca
      * @return \Illuminate\Http\Response
      */
     //*************************************** */
@@ -50,6 +51,7 @@ class CourseController extends Controller
         $data['course_status'] = $request->course_status;
         $data['course_image'] = $request->user_image;
         $get_image = $request->file('course_image');
+    
 
         if($get_image){
             //Get Name Image
@@ -58,11 +60,12 @@ class CourseController extends Controller
             //Split string Name - Get Name not ".jpg" - based on the sign '.'
             $name_image = current(explode('.', $get_name_image));
             //Make copies
-            $new_image = $name_image.mt_rand().date_default_timezone_get()
+            $time = Carbon::now()->format('Y');
+            $new_image = $name_image.mt_rand().$time
                         .'.'.$get_image->getClientOriginalExtension();
             //Move to folder
             $get_image->move('public/uploads/course', $new_image);
-            //closing down
+            
             $data['course_image'] = $new_image;
 
             DB::Table('tbl_course')->insert($data);
@@ -132,7 +135,7 @@ class CourseController extends Controller
         }else{
             $data['course_image'] = '';
             
-            DB::Table('tbl_course')->where('Course_id', $category_id)->update($data);
+            DB::Table('tbl_course')->where('course_id', $Course_id)->update($data);
             Session::put('message','Edit Course Success but not Image !!!');
             return Redirect::to('/admin/view-list-course');
         }        

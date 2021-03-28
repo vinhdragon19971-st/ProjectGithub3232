@@ -25,7 +25,7 @@
                             <?php
                                 }else{
                             ?>
-                            <center><a href="#dropdownMenu1"><i class="fa fa-lock"></i>Login to Payment</a></center>
+                            <center><a href="#dropdownMenu1"><i class="fa fa-lock"></i>Login to Submit</a></center>
                             <?php
                                 }
                             ?>                            

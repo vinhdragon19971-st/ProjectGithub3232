@@ -222,7 +222,7 @@ class UserController extends Controller
             return Redirect::to('/');
         }else{
             Session::put('message','Username or Password is wrong, input again !');
-            return Redirect::to('/home');
+            return Redirect::to('/');
         }
     }
 
