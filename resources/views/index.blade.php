@@ -32,6 +32,8 @@
    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
    <![endif]-->
+   @stack('css')
+
    </head>
    <body id="home_page" class="home_page">
       <!-- header -->
@@ -253,5 +255,6 @@
       <script src="{{asset('public/frontend/js/animate.js')}}"></script>
       <script src="{{asset('public/frontend/js/ekko-lightbox.js')}}"></script>
       <script src="{{asset('public/frontend/js/custom.js')}}"></script>
+      @stack('js')
    </body>
 </html>

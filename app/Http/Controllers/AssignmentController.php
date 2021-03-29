@@ -114,9 +114,31 @@ class AssignmentController extends Controller
         $user = DB::Table('tbl_submission')->where('user_id',$user_id)
                                         ->where('course_id',$course_id)->first();
 
-        
-        return view('Assignment.Assignment')->with('assignment', $assignment)
+        $exp = DB::table('tbl_asm')->where('course_id',$course_id)->first();
+
+        $checkTime = Carbon::parse($exp->exp);
+
+        $now = Carbon::now();
+
+        if (Carbon::now()->greaterThan($checkTime)){            
+            Session::put('timeup', 'Time Expired !!!');            
+
+            return view('Assignment.Assignment')->with('assignment', $assignment)
                                             ->with('infor_course', $infor_course)
                                             ->with('submit',$user);
+        }else{
+            $days = $now->diffInDays($checkTime);
+            $hours = $now->copy()->addDays($days)->diffInHours($checkTime);
+            $minutes = $now->copy()->addDays($days)->addHours($hours)->diffInMinutes($checkTime);
+            $seconds = $now->copy()->addDays($days)->addHours($hours)->addMinutes($minutes)->diffInSeconds($checkTime);
+            $timeup = $days.'-Days-'.$hours.':'.$minutes.':'.$seconds;
+
+            Session::put('timeup', $timeup);
+
+
+            return view('Assignment.Assignment')->with('assignment', $assignment)
+                                            ->with('infor_course', $infor_course)
+                                            ->with('submit',$user);
+        }
     }
 }

@@ -15,6 +15,9 @@
 //*************************************** */
 // User-Role-Admin
 
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+
 Route::get('/admin','AdminController@index');
 
 Route::get('/login-admin','AdminController@login_admin');
@@ -103,12 +106,27 @@ Route::get('/course-of-category/{category_id}','CourseController@Show_Course_of_
 
 Route::get('/assignment/{course_id}','AssignmentController@View_Assignment');
 
-//Mark
-
-Route::get('/mark/{course_id}','MarkController@View_Mark');
-
 //Submission
 
 Route::POST('/assignment/submission/{course_id}','SubmissionController@Submission');
 
 Route::POST('/assignment/submission/edit/{course_id}','SubmissionController@UpateSubmission');
+
+//Mark
+
+Route::get('/mark/{course_id}','MarkController@View_Mark');
+
+Route::get('/mark/details-mark/{submission_id}','MarkController@Details_Mark');
+
+Route::post('/users',function(Request $request){
+   $id = $request->get('data');
+
+
+   $data = DB::table('tbl_user')
+   ->whereIn('user_id',$id)
+   ->get();
+
+   return response()->json($data);
+   
+
+});

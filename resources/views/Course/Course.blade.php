@@ -16,7 +16,7 @@
                             $user_id = Session::get('user_id');
 							if($user_role == 1){
                             ?>
-                            <center><a href="{{URL::to('/assignment/'.$cou->course_id)}}">Submit for Topic</a></center>
+                            <center><a href="{{URL::to('/assignment/'.$cou->course_id)}}"><p style="font-size: 20px; color: red; border-style: dotted solid;">Submit for Topic</p></a></center>
                             <?php
                                 $user_id = Session::get('user_id');
                                 }else if($user_role == 2){
@@ -25,7 +25,7 @@
                             <?php
                                 }else{
                             ?>
-                            <center><a href="#dropdownMenu1"><i class="fa fa-lock"></i>Login to Submit</a></center>
+                            <center><a href="#dropdownMenu1"><i class="fa fa-lock"></i><p style="font-size: 20px; color: red; border-style: dotted solid;">Login to Submit</p></a></center>
                             <?php
                                 }
                             ?>                            

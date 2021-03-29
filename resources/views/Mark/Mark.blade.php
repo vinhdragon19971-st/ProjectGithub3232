@@ -23,17 +23,25 @@
         <tbody>
           @foreach($submission as $key => $sm)
           <tr>
-            <td>Mark</td>            
+            <td><a href="#">{{ $sm->submission_file}}</a></td>            
             <td>
-              <a href="{{URL::to('/admin/edit-mark/')}}"
+              <a href="{{URL::to('/mark/details-mark/'.$sm->submission_id)}}"
                   class="active styling-edit" ui-toggle-class="">
-                <i class="fa fa-pencil-square-o text-success text-active"></i></a>
+                Comment</a>
             </td>
             <td>
-                Mark
+              <a href="{{URL::to('/mark/preview-mark/')}}"
+                  class="active styling-edit" ui-toggle-class="">
+                Preview</a>
+            </td>
+            <td>
+              <form action="" method="post">
+                @csrf
+                <td><input type="number" name="mark_student" id="">Mark for student</td>
+              </form>
             </td>
           </tr>  
-          @endforeach       
+          @endforeach
         </tbody>
       </table>
     </div>

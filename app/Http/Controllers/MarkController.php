@@ -17,9 +17,17 @@ class MarkController extends Controller
      */
     public function View_Mark($course_id)
     {
-        $submission = DB::table('tbl_submission')->get();
+        $submission = DB::table('tbl_submission')->where('course_id', $course_id)->get();
 
         return view('Mark.Mark')->with('submission', $submission);
+    }
+
+    public function Details_Mark($submission_id)
+    {
+        $submission = DB::table('tbl_submission')->where('submission_id', $submission_id)->get();
+
+        
+        return view('Mark.DetailsMark')->with('submission', $submission);
     }
 
     public function index()

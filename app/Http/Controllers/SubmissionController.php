@@ -30,12 +30,15 @@ class SubmissionController extends Controller
             return redirect()->back()->with('failed','Deadline for ubmission');
         }
 
-
-        $validator = Validator::make($request->all(),[
+        $validator_report = Validator::make($request->all(),[
             'submission_file' => 'required|mimes:docx,doc',
         ]);
 
-        if ($validator->fails()) return redirect()->back()->withErrors($validator->errors());
+        $validator_image = Validator::make($request->all(),[
+            'image_file' => 'required|mimes:jpg,png',
+        ]);
+
+        if ($validator_report->fails()) return redirect()->back()->withErrors($validator_report->errors());
 
 
         $data = array();
@@ -44,27 +47,49 @@ class SubmissionController extends Controller
         $data['course_name'] = $request->course_name;
         $data['asm_name'] = $request->asm_name;
         $data['submission_file'] = $request->submission_file;
-        $get_image = $request->file('submission_file');
-        
+        $data['image_file'] = $request->submission_file;
+        $get_file = $request->file('submission_file');
+        $get_image = $request->file('image_file');
 
-
-        if($get_image){
+        if($get_file){
             //Get Name Image
-            $get_name_image = $get_image->getClientOriginalName();
+            $get_name_file = $get_file->getClientOriginalName();
             //Currenr = final '.'
             //Split string Name - Get Name not ".jpg" - based on the sign '.'
-            $name_image = current(explode('.', $get_name_image));
-            //Make copies
-            $new_image = $name_image.mt_rand().date_default_timezone_get()
-                        .'.'.$get_image->getClientOriginalExtension();
+            $name_file = current(explode('.', $get_name_file));
+            //Make copies            
+            $new_file = $name_file.mt_rand().date_default_timezone_get()
+                        .'.'.$get_file->getClientOriginalExtension();
             //Move to folder
-            $get_image->move('public/uploads/submit', $new_image);
+            $get_file->move('public/uploads/submit', $new_file);
             //closing down
-            $data['submission_file'] = $new_image;
+            $data['submission_file'] = $new_file;
 
-            DB::Table('tbl_submission')->insert($data);
-            Session::put('message','Submission Success !!!');
-            return Redirect::to('/');
+            if($get_image){
+                //Get Name Image
+                $get_name_image = $get_image->getClientOriginalName();
+                //Currenr = final '.'
+                //Split string Name - Get Name not .jpg - based on the sign '.'
+                $name_image = current(explode('.', $get_name_image));
+                //Make copies
+                $time = Carbon::now()->format('Y');
+                $new_image = $name_image.mt_rand().$time
+                            .'.'.$get_image->getClientOriginalExtension();
+                //Move to folder
+                $get_image->move('public/uploads/submit', $new_image);
+                //closing down
+                $data['image_file'] = $new_image;
+    
+                DB::Table('tbl_submission')->insert($data);
+                Session::put('message','Submission Success !!!');
+                return Redirect::to('/');
+            }else{
+                $data['image_file'] = '';
+                
+                DB::Table('tbl_submission')->insert($data);
+                Session::put('message','Submission Success !!!');
+                return Redirect::to('/');
+            }            
         }
         else{
             dd($get_image);
@@ -73,14 +98,15 @@ class SubmissionController extends Controller
 
     public function UpateSubmission(Request $request, $course_id)
     {
+        //Get Database
         $exp = DB::table('tbl_asm')->where('course_id',$course_id)->first();
-
+        //Get Exp time and Parse
         $checkTime = Carbon::parse($exp->exp);
-
+        //Get Time Now
         $now = Carbon::now();
-
+        //Compare Time
         if (Carbon::now()->greaterThan($checkTime)){
-            return redirect()->back()->with('failed','Deadline for ubmission');
+            return redirect()->back()->with('failed','Deadline for Submission');
         }
 
 
@@ -98,27 +124,48 @@ class SubmissionController extends Controller
         $data['course_name'] = $request->course_name;
         $data['asm_name'] = $request->asm_name;
         $data['submission_file'] = $request->submission_file;
-        $get_image = $request->file('submission_file');
-        
+        $data['image_file'] = $request->submission_file;
+        $get_file = $request->file('submission_file');
+        $get_image = $request->file('image_file');
 
-
-        if($get_image){
+        if($get_file){
             //Get Name Image
-            $get_name_image = $get_image->getClientOriginalName();
+            $get_name_file = $get_file->getClientOriginalName();
             //Currenr = final '.'
             //Split string Name - Get Name not ".jpg" - based on the sign '.'
-            $name_image = current(explode('.', $get_name_image));
+            $name_file = current(explode('.', $get_name_file));
             //Make copies
-            $new_image = $name_image.mt_rand().date_default_timezone_get()
-                        .'.'.$get_image->getClientOriginalExtension();
+            $new_file = $name_file.mt_rand().date_default_timezone_get()
+                        .'.'.$get_file->getClientOriginalExtension();
             //Move to folder
-            $get_image->move('public/uploads/submit', $new_image);
+            $get_image->move('public/uploads/submit', $new_file);
             //closing down
-            $data['submission_file'] = $new_image;
+            $data['submission_file'] = $new_file;
 
-            DB::Table('tbl_submission')->where('user_id', $user_id)->where('course_id', $course_id)->update($data);
-            Session::put('message','Submission Success !!!');
-            return Redirect::to('/');
+            if($get_image){
+                //Get Name Image
+                $get_name_image = $get_image->getClientOriginalName();
+                //Currenr = final '.'
+                //Split string Name - Get Name not .jpg - based on the sign '.'
+                $name_image = current(explode('.', $get_name_image));
+                //Make copies
+                $new_image = $name_image.mt_rand().date_default_timezone_get()
+                            .'.'.$get_image->getClientOriginalExtension();
+                //Move to folder
+                $get_image->move('public/uploads/course', $new_image);
+                //closing down
+                $data['image_file'] = $new_image;
+    
+                DB::Table('tbl_submission')->where('course_id', $course_id)->update($data);
+                Session::put('message','Submission Success !!!');
+                return Redirect::to('/');
+            }else{
+                $data['image_file'] = '';
+                
+                DB::Table('tbl_submission')->where('course_id', $course_id)->update($data);
+                Session::put('message','Submission Success !!!');
+                return Redirect::to('/');
+            }            
         }
         else{
             dd($get_image);
