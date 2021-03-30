@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th3 27, 2021 lúc 04:37 AM
+-- Thời gian đã tạo: Th3 30, 2021 lúc 11:03 AM
 -- Phiên bản máy phục vụ: 10.4.17-MariaDB
 -- Phiên bản PHP: 7.4.13
 
@@ -45,7 +45,8 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (5, '2021_02_20_090305_tbl_user', 3),
 (8, '2021_02_23_091011_tbl_category', 4),
 (9, '2021_03_23_075755_tbl_asm', 5),
-(10, '2021_03_24_141937_tbl_submission', 5);
+(10, '2021_03_24_141937_tbl_submission', 5),
+(11, '2021_03_30_154422_tbl_mark', 6);
 
 -- --------------------------------------------------------
 
@@ -70,7 +71,7 @@ CREATE TABLE `tbl_asm` (
   `course_id` int(11) NOT NULL,
   `asm_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `asm_status` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `exp` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `exp` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -80,7 +81,8 @@ CREATE TABLE `tbl_asm` (
 --
 
 INSERT INTO `tbl_asm` (`asm_id`, `course_id`, `asm_name`, `asm_status`, `exp`, `created_at`, `updated_at`) VALUES
-(1, 25, 'AoT240321', '1', '2021-03-26T23:59', NULL, NULL);
+(3, 25, 'CoW280321', '1', '2021-03-28 16:59:00', NULL, NULL),
+(4, 35, 'CoW28032021', '1', '2021-04-30 16:59:00', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -128,9 +130,26 @@ CREATE TABLE `tbl_course` (
 --
 
 INSERT INTO `tbl_course` (`course_id`, `category_id`, `course_name`, `course_des`, `course_status`, `course_image`, `created_at`, `updated_at`) VALUES
-(24, 6, 'Color of Winter', 'Color of Winter is best topic of Winter', 1, 'ColorOfWinter218318693UTC.jpg', NULL, NULL),
 (25, 1, 'Color of Atumn', 'Color of Atumn is best topic of Athumn', 1, 'CorlorOfAthumn1518788581UTC.jpg', NULL, NULL),
-(26, 1, 'Color of Winter', 'Color of Winteris best topic of Athumn', 1, 'ColorOfWinter1219613722UTC.jpg', NULL, NULL);
+(35, 2, 'Color Of Winter', 'Color Of Winter', 1, 'ColorOfWinter10104934402021.jpg', NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `tbl_mark`
+--
+
+CREATE TABLE `tbl_mark` (
+  `mark_id` int(10) UNSIGNED NOT NULL,
+  `course_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `user_id_coor` int(11) NOT NULL,
+  `mark` double(8,2) NOT NULL,
+  `mark_status` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `mark_comment` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -141,9 +160,11 @@ INSERT INTO `tbl_course` (`course_id`, `category_id`, `course_name`, `course_des
 CREATE TABLE `tbl_submission` (
   `submission_id` int(10) UNSIGNED NOT NULL,
   `user_id` int(11) NOT NULL,
+  `course_id` int(11) NOT NULL,
   `course_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `asm_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `submission_file` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `image_file` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -152,8 +173,8 @@ CREATE TABLE `tbl_submission` (
 -- Đang đổ dữ liệu cho bảng `tbl_submission`
 --
 
-INSERT INTO `tbl_submission` (`submission_id`, `user_id`, `course_name`, `asm_name`, `submission_file`, `created_at`, `updated_at`) VALUES
-(4, 3, 'Color Of Atumn', 'AoT240321', 'Bài 11932025571UTC.docx', NULL, NULL);
+INSERT INTO `tbl_submission` (`submission_id`, `user_id`, `course_id`, `course_name`, `asm_name`, `submission_file`, `image_file`, `created_at`, `updated_at`) VALUES
+(22, 7, 35, 'Color Of Winter', 'CoW28032021', '2020929116716Asia/Ho_Chi_Minh.docx', 'logo-removebg-preview11891525862021.png', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -234,10 +255,18 @@ ALTER TABLE `tbl_course`
   ADD KEY `FOREIGN` (`category_id`) USING BTREE;
 
 --
+-- Chỉ mục cho bảng `tbl_mark`
+--
+ALTER TABLE `tbl_mark`
+  ADD PRIMARY KEY (`mark_id`);
+
+--
 -- Chỉ mục cho bảng `tbl_submission`
 --
 ALTER TABLE `tbl_submission`
-  ADD PRIMARY KEY (`submission_id`);
+  ADD PRIMARY KEY (`submission_id`),
+  ADD KEY `FOREIN` (`user_id`),
+  ADD KEY `FOREIN2` (`course_id`);
 
 --
 -- Chỉ mục cho bảng `tbl_user`
@@ -259,13 +288,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT cho bảng `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT cho bảng `tbl_asm`
 --
 ALTER TABLE `tbl_asm`
-  MODIFY `asm_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `asm_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT cho bảng `tbl_category`
@@ -277,13 +306,19 @@ ALTER TABLE `tbl_category`
 -- AUTO_INCREMENT cho bảng `tbl_course`
 --
 ALTER TABLE `tbl_course`
-  MODIFY `course_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `course_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+
+--
+-- AUTO_INCREMENT cho bảng `tbl_mark`
+--
+ALTER TABLE `tbl_mark`
+  MODIFY `mark_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT cho bảng `tbl_submission`
 --
 ALTER TABLE `tbl_submission`
-  MODIFY `submission_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `submission_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT cho bảng `tbl_user`
