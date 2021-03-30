@@ -1,5 +1,14 @@
 @extends('index')
 
+@php
+    if (is_null($submit)){
+       $submission_id = -1;
+    } else {
+        $submission_id = $submit->submission_id;
+    }
+
+    
+@endphp
 
 @push('css')
   <style>
@@ -172,9 +181,9 @@
                 </table>                
             </div>            
         </div>
-        
+        @if(!is_null($submit))
         <div class="submissionstatustable">
-            <h3>Coomment</h3>
+            <h3>Chat with Coordinator</h3>
             <div class="comments">
                
                </div>
@@ -182,14 +191,13 @@
                 <table class="generaltable">
                     <tbody>
                         <tr class="lastrow">
-                            <th class="cell c0" style="" scope="row">Submission comments</th>
+                            <th class="cell c0" style="" scope="row"></th>
                             <td class="cell c1 lastcol" style="">
                                 <div class="box boxaligncenter plugincontentsummary summary_assignsubmission_comments_224587">                        
                                     <div class="mdl-left">
-                                        <a class="showcommentsnonjs" href="#">Show comments</a>
-                                        <a class="comment-link" id="comment-link-6040dcb9c6a0f" href="#" role="button" aria-expanded="false">
-                                            <i class="icon fa fa-caret-right fa-fw " title="Comments" aria-label="Comments"></i>
-                                            <span id="comment-link-text-6040dcb9c6a0f">Comments (0)</span>
+                                        <a class="showcommentsnonjs" href="#"></a>
+                                        <a class="comment-link" id="comment-link-6040dcb9c6a0f" href="#" role="button" aria-expanded="false">                                            
+                                            <span id="comment-link-text-6040dcb9c6a0f"></span>
                                         </a>
                                         <div id="comment-ctrl-6040dcb9c6a0f" class="comment-ctrl">
                                             <ul id="comment-list-6040dcb9c6a0f" class="comment-list">
@@ -200,9 +208,7 @@
                                                     <input id="message" class="form-control" name="content" rows="2" id="dlg-content-6040dcb9c6a0f" aria-label="Add a comment..." cols="20" style="color: grey;">
                                                 </div>
                                                 <div class="fd" id="comment-action-6040dcb9c6a0f">
-                                                    <a id="comment-action-post-6040d cb9c6a0f" class="save-comment" href="#">Save comment</a>
-                                                    <span> | </span>
-                                                    <a id="comment-action-cancel-6040dcb9c6a0f" class="cancel-comment" href="#">Cancel</a>
+                                                <i class="icon fa fa-caret-right fa-fw " title="Comments" aria-label="Comments"></i><a id="comment-action-post-6040d cb9c6a0f" class="save-comment" href="#">Send Message</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -214,6 +220,7 @@
                 </table>
             </div>       
         </div>
+        @endif
     </section>    
 @endsection
 
@@ -246,7 +253,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
 <script>
 
-    const submission_id = JSON.parse(`{!! $submit->submission_id !!}`);
+    const submission_id = JSON.parse(`{!! $submission_id !!}`);
     const user_id = `{!!session('user_id') !!}`;
   
   const database = firebase.database();

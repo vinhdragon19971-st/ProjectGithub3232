@@ -82,13 +82,13 @@ class SubmissionController extends Controller
     
                 DB::Table('tbl_submission')->insert($data);
                 Session::put('message','Submission Success !!!');
-                return Redirect::to('/');
+                return Redirect::to('/assignment/'.$course_id);
             }else{
                 $data['image_file'] = '';
                 
                 DB::Table('tbl_submission')->insert($data);
                 Session::put('message','Submission Success !!!');
-                return Redirect::to('/');
+                return Redirect::to('/assignment/'.$course_id);
             }            
         }
         else{
@@ -138,7 +138,7 @@ class SubmissionController extends Controller
             $new_file = $name_file.mt_rand().date_default_timezone_get()
                         .'.'.$get_file->getClientOriginalExtension();
             //Move to folder
-            $get_image->move('public/uploads/submit', $new_file);
+            $get_file->move('public/uploads/submit', $new_file);
             //closing down
             $data['submission_file'] = $new_file;
 
@@ -149,22 +149,23 @@ class SubmissionController extends Controller
                 //Split string Name - Get Name not .jpg - based on the sign '.'
                 $name_image = current(explode('.', $get_name_image));
                 //Make copies
-                $new_image = $name_image.mt_rand().date_default_timezone_get()
+                $time = Carbon::now()->format('Y');
+                $new_image = $name_image.mt_rand().$time
                             .'.'.$get_image->getClientOriginalExtension();
                 //Move to folder
-                $get_image->move('public/uploads/course', $new_image);
+                $get_image->move('public/uploads/submit', $new_image);
                 //closing down
                 $data['image_file'] = $new_image;
     
                 DB::Table('tbl_submission')->where('course_id', $course_id)->update($data);
                 Session::put('message','Submission Success !!!');
-                return Redirect::to('/');
+                return Redirect::to('/assignment/'.$course_id);
             }else{
                 $data['image_file'] = '';
                 
                 DB::Table('tbl_submission')->where('course_id', $course_id)->update($data);
                 Session::put('message','Submission Success !!!');
-                return Redirect::to('/');
+                return Redirect::to('/assignment/'.$course_id);
             }            
         }
         else{

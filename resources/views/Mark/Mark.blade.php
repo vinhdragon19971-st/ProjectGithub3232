@@ -27,7 +27,7 @@
             <td>
               <a href="{{URL::to('/mark/details-mark/'.$sm->submission_id)}}"
                   class="active styling-edit" ui-toggle-class="">
-                Comment</a>
+                Details</a>
             </td>
             <td>
               <a href="{{URL::to('/mark/preview-mark/')}}"
